@@ -2,6 +2,7 @@ package com.droidev.bitcoinpriceapp;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 
@@ -15,17 +16,22 @@ import org.json.JSONObject;
 public class BitcoinService extends Service {
 
     private final Handler handler = new Handler();
-    private int INTERVAL = 5 * 60 * 1000; // 5 minutos como padrão
+    private int INTERVAL = 5 * 60 * 1000; // 5 minutos
     private Runnable task;
-    private double lastBrlPrice = -1.0; // Valor inicial inválido para garantir primeira notificação
-    private double lastUsdPrice = -1.0; // Valor inicial inválido para garantir primeira notificação
+
+    private static final String PREF_NAME = "bitcoin_prices";
+    private static final String KEY_BRL = "brl";
+    private static final String KEY_USD = "usd";
+
+    private double lastBrlPrice = -1.0;
+    private double lastUsdPrice = -1.0;
 
     @Override
     public void onCreate() {
         super.onCreate();
         startForeground(1, NotificationUtils.createPersistentNotification(this));
+        loadLastPrices(); // Carrega os preços persistidos
         setupTask();
-        // Atrasar a primeira execução pelo intervalo definido
         handler.postDelayed(task, INTERVAL);
     }
 
@@ -33,7 +39,6 @@ public class BitcoinService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && intent.hasExtra("interval")) {
             INTERVAL = intent.getIntExtra("interval", INTERVAL);
-            // Reiniciar a tarefa com o novo intervalo
             handler.removeCallbacks(task);
             setupTask();
             handler.postDelayed(task, INTERVAL);
@@ -74,11 +79,12 @@ public class BitcoinService extends Service {
                         double brl = btc.getDouble("brl");
                         double usd = btc.getDouble("usd");
 
-                        // Enviar notificação apenas se o preço mudou
+                        // Verifica se o preço mudou em relação ao último persistido
                         if (brl != lastBrlPrice || usd != lastUsdPrice) {
                             NotificationUtils.sendPriceNotification(getApplicationContext(), brl, usd);
                             lastBrlPrice = brl;
                             lastUsdPrice = usd;
+                            saveLastPrices(brl, usd); // Salva os novos preços
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -87,5 +93,19 @@ public class BitcoinService extends Service {
                 Throwable::printStackTrace);
 
         queue.add(request);
+    }
+
+    private void saveLastPrices(double brl, double usd) {
+        SharedPreferences prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        prefs.edit()
+                .putLong(KEY_BRL, Double.doubleToLongBits(brl))
+                .putLong(KEY_USD, Double.doubleToLongBits(usd))
+                .apply();
+    }
+
+    private void loadLastPrices() {
+        SharedPreferences prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        lastBrlPrice = Double.longBitsToDouble(prefs.getLong(KEY_BRL, Double.doubleToLongBits(-1.0)));
+        lastUsdPrice = Double.longBitsToDouble(prefs.getLong(KEY_USD, Double.doubleToLongBits(-1.0)));
     }
 }
