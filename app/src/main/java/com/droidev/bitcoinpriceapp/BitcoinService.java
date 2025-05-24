@@ -17,6 +17,8 @@ public class BitcoinService extends Service {
 
     private final Handler handler = new Handler();
     private int INTERVAL = 5 * 60 * 1000; // 5 minutos
+    private double targetPrice = -1.0;
+    private String currency = "USD";
     private Runnable task;
 
     private static final String PREF_NAME = "bitcoin_prices";
@@ -30,15 +32,23 @@ public class BitcoinService extends Service {
     public void onCreate() {
         super.onCreate();
         startForeground(1, NotificationUtils.createPersistentNotification(this));
-        loadLastPrices(); // Carrega os preços persistidos
+        loadLastPrices();
         setupTask();
         handler.postDelayed(task, INTERVAL);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null && intent.hasExtra("interval")) {
-            INTERVAL = intent.getIntExtra("interval", INTERVAL);
+        if (intent != null) {
+            if (intent.hasExtra("interval")) {
+                INTERVAL = intent.getIntExtra("interval", INTERVAL);
+            }
+            if (intent.hasExtra("targetPrice")) {
+                targetPrice = intent.getDoubleExtra("targetPrice", -1.0);
+            }
+            if (intent.hasExtra("currency")) {
+                currency = intent.getStringExtra("currency");
+            }
             handler.removeCallbacks(task);
             setupTask();
             handler.postDelayed(task, INTERVAL);
@@ -79,12 +89,27 @@ public class BitcoinService extends Service {
                         double brl = btc.getDouble("brl");
                         double usd = btc.getDouble("usd");
 
-                        // Verifica se o preço mudou em relação ao último persistido
-                        if (brl != lastBrlPrice || usd != lastUsdPrice) {
+                        boolean shouldNotify = false;
+
+                        if (targetPrice > 0) {
+                            // Notify only if current price is at or below target
+                            if (currency.equals("USD") && usd <= targetPrice) {
+                                shouldNotify = true;
+                            } else if (currency.equals("BRL") && brl <= targetPrice) {
+                                shouldNotify = true;
+                            }
+                        } else {
+                            // No target price set, notify if price changed
+                            if (brl != lastBrlPrice || usd != lastUsdPrice) {
+                                shouldNotify = true;
+                            }
+                        }
+
+                        if (shouldNotify) {
                             NotificationUtils.sendPriceNotification(getApplicationContext(), brl, usd);
                             lastBrlPrice = brl;
                             lastUsdPrice = usd;
-                            saveLastPrices(brl, usd); // Salva os novos preços
+                            saveLastPrices(brl, usd);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

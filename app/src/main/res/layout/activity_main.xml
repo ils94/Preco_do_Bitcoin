@@ -24,8 +24,43 @@
         android:layout_marginBottom="24dp"
         android:backgroundTint="@color/design_default_color_primary" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:text="Moeda"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        tools:ignore="HardcodedText" />
+
+    <Spinner
+        android:id="@+id/currencySpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="@color/design_default_color_primary" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:text="Preço Alvo (Opcional)"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        tools:ignore="HardcodedText" />
+
+    <EditText
+        android:id="@+id/targetPriceEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:hint="Digite o preço alvo"
+        android:inputType="numberDecimal"
+        tools:ignore="HardcodedText" />
+
     <Button
         android:id="@+id/serviceToggleButton"
+        android:autoText="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -36,6 +71,6 @@
         android:padding="12dp"
         android:text="Iniciar Serviço"
         android:textColor="#FFFFFF"
-        tools:ignore="HardcodedText" />
+        tools:ignore="Deprecated,HardcodedText,TextViewEdits" />
 
 </LinearLayout>
