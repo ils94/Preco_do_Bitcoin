@@ -29,23 +29,24 @@ public class NotificationUtils {
                 .setSmallIcon(R.drawable.ic_bitcoin_notification)
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setOngoing(true)
+                .setGroup("persistent_notification_group")
                 .build();
     }
 
     public static void sendPriceNotification(Context context, double brl, double usd) {
-        // Format prices with correct locale
         NumberFormat brlFormatter = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
         NumberFormat usdFormatter = NumberFormat.getCurrencyInstance(new Locale("en", "US"));
         String formattedBrl = brlFormatter.format(brl);
         String formattedUsd = usdFormatter.format(usd);
 
-        String notificationText = String.format("%s|%s", formattedBrl, formattedUsd);
+        String notificationText = String.format("%s | %s", formattedBrl, formattedUsd);
 
         Notification notification = new NotificationCompat.Builder(context, PRICE_CHANNEL_ID)
                 .setContentTitle("Atualização do Preço do Bitcoin")
                 .setContentText(notificationText)
                 .setSmallIcon(R.drawable.ic_bitcoin_notification)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setGroup("price_notification_group")
                 .build();
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -57,16 +58,18 @@ public class NotificationUtils {
             NotificationChannel persistentChannel = new NotificationChannel(
                     PERSISTENT_CHANNEL_ID,
                     PERSISTENT_CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_MIN
+                    NotificationManager.IMPORTANCE_LOW
             );
+
             persistentChannel.setDescription("Canal para o Serviço de Notificação Persistente do Bitcoin");
             persistentChannel.setShowBadge(false);
 
             NotificationChannel priceChannel = new NotificationChannel(
                     PRICE_CHANNEL_ID,
                     PRICE_CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManager.IMPORTANCE_HIGH
             );
+
             priceChannel.setDescription("Canal para Atualizações Sobre o Preço do Bitcoin");
 
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);

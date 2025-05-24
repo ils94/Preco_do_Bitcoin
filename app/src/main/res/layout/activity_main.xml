@@ -26,7 +26,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:backgroundTint="@color/design_default_color_primary" />
+            android:backgroundTint="@color/design_default_color_primary"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -41,8 +42,19 @@
             android:id="@+id/currencySpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="@color/design_default_color_primary"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <!-- Texto explicativo sobre a função da moeda -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:backgroundTint="@color/design_default_color_primary" />
+            android:text="A moeda selecionada será usada para comparar com o preço alvo."
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="14sp"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -60,7 +72,7 @@
             android:layout_marginBottom="24dp"
             android:hint="Digite o preço alvo"
             android:inputType="numberDecimal"
-            tools:ignore="HardcodedText" />
+            tools:ignore="Autofill,HardcodedText,TouchTargetSizeCheck,TextContrastCheck" />
 
         <Button
             android:id="@+id/serviceToggleButton"
@@ -83,7 +95,8 @@
             android:layout_marginTop="16dp"
             android:text="Último preço: --"
             android:textSize="16sp"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:ignore="HardcodedText" />
 
     </LinearLayout>
 </ScrollView>
