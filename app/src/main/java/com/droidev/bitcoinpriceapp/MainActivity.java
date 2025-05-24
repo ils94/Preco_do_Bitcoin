@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String[] CURRENCIES = {"USD", "BRL"};
     private int selectedInterval = INTERVAL_VALUES[0];
     private String selectedCurrency = CURRENCIES[0];
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +46,33 @@ public class MainActivity extends AppCompatActivity {
         targetPriceEditText = findViewById(R.id.targetPriceEditText);
         serviceToggleButton = findViewById(R.id.serviceToggleButton);
 
+        // Initialize SharedPreferences
+        prefs = getSharedPreferences("BitcoinPriceAppPrefs", MODE_PRIVATE);
+
+        // Load saved target price
+        String savedTargetPrice = prefs.getString("targetPrice", "");
+        if (!savedTargetPrice.isEmpty()) {
+            targetPriceEditText.setText(savedTargetPrice);
+        }
+
+        // Load saved interval and currency positions
+        int savedIntervalPosition = prefs.getInt("intervalPosition", 0);
+        int savedCurrencyPosition = prefs.getInt("currencyPosition", 0);
+
         isServiceRunning = isServiceRunning();
         updateButtonText();
 
         setupIntervalSpinner();
         setupCurrencySpinner();
+
+        // Set saved spinner positions after setup to ensure adapters are initialized
+        intervalSpinner.setSelection(savedIntervalPosition);
+        currencySpinner.setSelection(savedCurrencyPosition);
+
+        // Update selected values based on loaded positions
+        selectedInterval = INTERVAL_VALUES[savedIntervalPosition];
+        selectedCurrency = CURRENCIES[savedCurrencyPosition];
+
         requestNotificationPermission();
 
         serviceToggleButton.setOnClickListener(v -> toggleService());
@@ -78,6 +102,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedInterval = INTERVAL_VALUES[position];
+                // Save selected interval position
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putInt("intervalPosition", position);
+                editor.apply();
                 if (isServiceRunning) {
                     stopService();
                     // Get target price from EditText or use default
@@ -114,6 +142,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedCurrency = CURRENCIES[position];
+                // Save selected currency position
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putInt("currencyPosition", position);
+                editor.apply();
             }
 
             @Override
@@ -136,6 +168,10 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(this, "Por favor, insira um preço válido maior que 0.", Toast.LENGTH_SHORT).show();
                         return;
                     }
+                    // Save target price to SharedPreferences
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("targetPrice", targetPriceStr);
+                    editor.apply();
                 } catch (NumberFormatException e) {
                     Toast.makeText(this, "Por favor, insira um preço numérico válido.", Toast.LENGTH_SHORT).show();
                     return;

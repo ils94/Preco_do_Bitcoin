@@ -39,7 +39,7 @@ public class NotificationUtils {
         String formattedBrl = brlFormatter.format(brl);
         String formattedUsd = usdFormatter.format(usd);
 
-        String notificationText = String.format("Preço do Bitcoin: %s / %s", formattedBrl, formattedUsd);
+        String notificationText = String.format("%s|%s", formattedBrl, formattedUsd);
 
         Notification notification = new NotificationCompat.Builder(context, PRICE_CHANNEL_ID)
                 .setContentTitle("Atualização do Preço do Bitcoin")
