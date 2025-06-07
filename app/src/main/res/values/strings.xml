@@ -20,6 +20,22 @@
     <string name="price_notification_title">Bitcoin Price Update</string>
     <string name="persistent_channel_description">Channel for persistent Bitcoin notification service</string>
     <string name="price_channel_description">Channel for Bitcoin price updates</string>
+    <!-- Menu strings -->
+    <string name="menu_calculator">Price Calculator</string>
+    <!-- Calculator activity strings -->
+    <string name="calculator_title">Bitcoin Price Calculator</string>
+    <string name="amount_label">Amount</string>
+    <string name="amount_hint">Enter amount</string>
+    <string name="currency_label">Currency</string>
+    <string name="dealer_fee_label">Dealer Fee (%)</string>
+    <string name="dealer_fee_hint">Enter fee percentage (e.g., 1.5)</string>
+    <string name="transaction_type_label">Transaction Type</string>
+    <string name="use_sats_label">Use Satoshis (SATs)</string>
+    <string name="calculate_button">Calculate</string>
+    <string name="result_label">Result</string>
+    <string name="error_fetching_price">Error fetching Bitcoin price</string>
+    <string name="invalid_amount">Please enter a valid amount</string>
+    <string name="invalid_fee">Please enter a valid dealer fee percentage</string>
     <string-array name="intervals">
         <item>5 minutes</item>
         <item>10 minutes</item>
@@ -34,5 +50,14 @@
     <string-array name="price_conditions">
         <item>Less than or Equal</item>
         <item>Greater than or Equal</item>
+    </string-array>
+    <string-array name="calculator_currencies">
+        <item>BTC</item>
+        <item>USD</item>
+        <item>BRL</item>
+    </string-array>
+    <string-array name="transaction_types">
+        <item>Buy</item>
+        <item>Sell</item>
     </string-array>
 </resources>

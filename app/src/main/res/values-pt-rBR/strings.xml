@@ -20,6 +20,22 @@
     <string name="price_notification_title">Atualização do Preço do Bitcoin</string>
     <string name="persistent_channel_description">Canal para o serviço de notificação persistente do Bitcoin</string>
     <string name="price_channel_description">Canal para atualizações sobre o preço do Bitcoin</string>
+    <!-- Menu strings -->
+    <string name="menu_calculator">Calculadora de Preço</string>
+    <!-- Calculator activity strings -->
+    <string name="calculator_title">Calculadora de Preço do Bitcoin</string>
+    <string name="amount_label">Quantidade</string>
+    <string name="amount_hint">Digite a quantidade</string>
+    <string name="currency_label">Moeda</string>
+    <string name="dealer_fee_label">Taxa do Vendedor (%)</string>
+    <string name="dealer_fee_hint">Digite a porcentagem da taxa (ex.: 1,5)</string>
+    <string name="transaction_type_label">Tipo de Transação</string>
+    <string name="use_sats_label">Usar Satoshis (SATs)</string>
+    <string name="calculate_button">Calcular</string>
+    <string name="result_label">Resultado</string>
+    <string name="error_fetching_price">Erro ao buscar o preço do Bitcoin</string>
+    <string name="invalid_amount">Por favor, insira uma quantidade válida</string>
+    <string name="invalid_fee">Por favor, insira uma porcentagem de taxa válida</string>
     <string-array name="intervals">
         <item>5 minutos</item>
         <item>10 minutos</item>
@@ -34,5 +50,14 @@
     <string-array name="price_conditions">
         <item>Menor ou Igual</item>
         <item>Maior ou Igual</item>
+    </string-array>
+    <string-array name="calculator_currencies">
+        <item>BTC</item>
+        <item>USD</item>
+        <item>BRL</item>
+    </string-array>
+    <string-array name="transaction_types">
+        <item>Compra</item>
+        <item>Venda</item>
     </string-array>
 </resources>
