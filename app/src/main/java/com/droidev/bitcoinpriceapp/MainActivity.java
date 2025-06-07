@@ -1,3 +1,4 @@
+
 package com.droidev.bitcoinpriceapp;
 
 import android.Manifest;
@@ -26,14 +27,15 @@ public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_CODE = 101;
     private Spinner intervalSpinner;
     private Spinner currencySpinner;
+    private Spinner priceConditionSpinner;
     private EditText targetPriceEditText;
     private Button serviceToggleButton;
     private boolean isServiceRunning = false;
-    private static final String[] INTERVALS = {"5 minutos", "10 minutos", "15 minutos", "30 minutos", "1 hora"};
-    private static final int[] INTERVAL_VALUES = {5 * 60 * 1000, 10 * 60 * 1000, 15 * 60 * 1000, 30 * 60 * 1000, 60 * 60 * 1000};
     private static final String[] CURRENCIES = {"USD", "BRL"};
-    private int selectedInterval = INTERVAL_VALUES[0];
+    private static final String[] PRICE_CONDITION_VALUES = {"LESS_THAN_OR_EQUAL", "GREATER_THAN_OR_EQUAL"};
+    private int selectedInterval;
     private String selectedCurrency = CURRENCIES[0];
+    private String selectedPriceCondition = PRICE_CONDITION_VALUES[0];
     private SharedPreferences prefs;
 
     @Override
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
         intervalSpinner = findViewById(R.id.intervalSpinner);
         currencySpinner = findViewById(R.id.currencySpinner);
+        priceConditionSpinner = findViewById(R.id.priceConditionSpinner);
         targetPriceEditText = findViewById(R.id.targetPriceEditText);
         serviceToggleButton = findViewById(R.id.serviceToggleButton);
 
@@ -55,18 +58,22 @@ public class MainActivity extends AppCompatActivity {
 
         int savedIntervalPosition = prefs.getInt("intervalPosition", 0);
         int savedCurrencyPosition = prefs.getInt("currencyPosition", 0);
+        int savedPriceConditionPosition = prefs.getInt("priceConditionPosition", 0);
 
         isServiceRunning = isServiceRunning();
         updateButtonText();
 
         setupIntervalSpinner();
         setupCurrencySpinner();
+        setupPriceConditionSpinner();
 
         intervalSpinner.setSelection(savedIntervalPosition);
         currencySpinner.setSelection(savedCurrencyPosition);
+        priceConditionSpinner.setSelection(savedPriceConditionPosition);
 
-        selectedInterval = INTERVAL_VALUES[savedIntervalPosition];
+        selectedInterval = getResources().getIntArray(R.array.interval_values)[savedIntervalPosition];
         selectedCurrency = CURRENCIES[savedCurrencyPosition];
+        selectedPriceCondition = PRICE_CONDITION_VALUES[savedPriceConditionPosition];
 
         requestNotificationPermission();
 
@@ -84,19 +91,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateButtonText() {
-        serviceToggleButton.setText(isServiceRunning ? "Parar Serviço" : "Iniciar Serviço");
+        serviceToggleButton.setText(isServiceRunning ? R.string.stop_service : R.string.start_service);
     }
 
     private void setupIntervalSpinner() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, INTERVALS);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.intervals, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         intervalSpinner.setAdapter(adapter);
 
         intervalSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedInterval = INTERVAL_VALUES[position];
+                selectedInterval = getResources().getIntArray(R.array.interval_values)[position];
 
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putInt("intervalPosition", position);
@@ -111,11 +118,11 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             targetPrice = Double.parseDouble(targetPriceStr);
                             if (targetPrice <= 0) {
-                                Toast.makeText(MainActivity.this, "Preço alvo inválido, usando padrão.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, R.string.invalid_target_price_default, Toast.LENGTH_SHORT).show();
                                 targetPrice = -1.0;
                             }
                         } catch (NumberFormatException e) {
-                            Toast.makeText(MainActivity.this, "Preço alvo inválido, usando padrão.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, R.string.invalid_target_price_format, Toast.LENGTH_SHORT).show();
                         }
                     }
                     startService(targetPrice);
@@ -150,6 +157,28 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void setupPriceConditionSpinner() {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.price_conditions, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        priceConditionSpinner.setAdapter(adapter);
+
+        priceConditionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedPriceCondition = PRICE_CONDITION_VALUES[position];
+
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putInt("priceConditionPosition", position);
+                editor.apply();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+    }
+
     private void toggleService() {
         if (isServiceRunning) {
             stopService();
@@ -162,11 +191,11 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     targetPrice = Double.parseDouble(targetPriceStr);
                     if (targetPrice <= 0) {
-                        Toast.makeText(this, "Por favor, insira um preço válido maior que 0.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, R.string.invalid_target_price, Toast.LENGTH_SHORT).show();
                         return;
                     }
                 } catch (NumberFormatException e) {
-                    Toast.makeText(this, "Por favor, insira um preço numérico válido.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.invalid_target_price_format, Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
@@ -186,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
         serviceIntent.putExtra("interval", selectedInterval);
         serviceIntent.putExtra("targetPrice", targetPrice);
         serviceIntent.putExtra("currency", selectedCurrency);
+        serviceIntent.putExtra("priceCondition", selectedPriceCondition);
         startService(serviceIntent);
     }
 

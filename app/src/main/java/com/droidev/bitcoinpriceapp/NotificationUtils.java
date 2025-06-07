@@ -13,10 +13,8 @@ import java.util.Locale;
 
 public class NotificationUtils {
 
-    private static final String PERSISTENT_CHANNEL_ID = "canal_servico_preco_do_bitcoin";
-    private static final String PRICE_CHANNEL_ID = "canal_preco_do_bitcoin_atualizacao";
-    private static final String PERSISTENT_CHANNEL_NAME = "Serviço do Preço do Bitcoin";
-    private static final String PRICE_CHANNEL_NAME = "Atualização do Preço do Bitcoin";
+    private static final String PERSISTENT_CHANNEL_ID = "bitcoin_price_service_channel";
+    private static final String PRICE_CHANNEL_ID = "bitcoin_price_update_channel";
     private static final int PRICE_NOTIFICATION_ID = 2;
 
     @NonNull
@@ -24,8 +22,8 @@ public class NotificationUtils {
         createNotificationChannels(context);
 
         return new NotificationCompat.Builder(context, PERSISTENT_CHANNEL_ID)
-                .setContentTitle("Serviço de Monitoramento do Preço do Bitcoin")
-                .setContentText("Monitorando o Preço do Bitcoin...")
+                .setContentTitle(context.getString(R.string.persistent_notification_title))
+                .setContentText(context.getString(R.string.persistent_notification_text))
                 .setSmallIcon(R.drawable.ic_bitcoin_notification)
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setOngoing(true)
@@ -42,7 +40,7 @@ public class NotificationUtils {
         String notificationText = String.format("%s | %s", formattedBrl, formattedUsd);
 
         Notification notification = new NotificationCompat.Builder(context, PRICE_CHANNEL_ID)
-                .setContentTitle("Atualização do Preço do Bitcoin")
+                .setContentTitle(context.getString(R.string.price_notification_title))
                 .setContentText(notificationText)
                 .setSmallIcon(R.drawable.ic_bitcoin_notification)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -57,20 +55,20 @@ public class NotificationUtils {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationChannel persistentChannel = new NotificationChannel(
                     PERSISTENT_CHANNEL_ID,
-                    PERSISTENT_CHANNEL_NAME,
+                    context.getString(R.string.persistent_channel_name),
                     NotificationManager.IMPORTANCE_LOW
             );
 
-            persistentChannel.setDescription("Canal para o Serviço de Notificação Persistente do Bitcoin");
+            persistentChannel.setDescription(context.getString(R.string.persistent_channel_description));
             persistentChannel.setShowBadge(false);
 
             NotificationChannel priceChannel = new NotificationChannel(
                     PRICE_CHANNEL_ID,
-                    PRICE_CHANNEL_NAME,
+                    context.getString(R.string.price_channel_name),
                     NotificationManager.IMPORTANCE_HIGH
             );
 
-            priceChannel.setDescription("Canal para Atualizações Sobre o Preço do Bitcoin");
+            priceChannel.setDescription(context.getString(R.string.price_channel_description));
 
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(persistentChannel);

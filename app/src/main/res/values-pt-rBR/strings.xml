@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Preço do Bitcoin</string>
+    <string name="notification_interval">Intervalo das Notificações</string>
+    <string name="currency">Moeda</string>
+    <string name="currency_description">A moeda selecionada será usada para comparar com o preço alvo.</string>
+    <string name="price_condition">Condição do Preço</string>
+    <string name="target_price">Preço Alvo (Opcional)</string>
+    <string name="target_price_hint">Digite o preço alvo</string>
+    <string name="start_service">Iniciar Serviço</string>
+    <string name="stop_service">Parar Serviço</string>
+    <string name="last_price">Último preço: --</string>
+    <string name="invalid_target_price">Por favor, insira um preço válido maior que 0.</string>
+    <string name="invalid_target_price_format">Por favor, insira um preço numérico válido.</string>
+    <string name="invalid_target_price_default">Preço alvo inválido, usando padrão.</string>
+    <!-- Notification-related strings -->
+    <string name="persistent_channel_name">Serviço do Preço do Bitcoin</string>
+    <string name="price_channel_name">Atualização do Preço do Bitcoin</string>
+    <string name="persistent_notification_title">Serviço de Monitoramento do Preço do Bitcoin</string>
+    <string name="persistent_notification_text">Monitorando o preço do Bitcoin...</string>
+    <string name="price_notification_title">Atualização do Preço do Bitcoin</string>
+    <string name="persistent_channel_description">Canal para o serviço de notificação persistente do Bitcoin</string>
+    <string name="price_channel_description">Canal para atualizações sobre o preço do Bitcoin</string>
+    <string-array name="intervals">
+        <item>5 minutos</item>
+        <item>10 minutos</item>
+        <item>15 minutos</item>
+        <item>30 minutos</item>
+        <item>1 hora</item>
+        <item>4 horas</item>
+        <item>6 horas</item>
+        <item>12 horas</item>
+        <item>24 horas</item>
+    </string-array>
+    <string-array name="price_conditions">
+        <item>Menor ou Igual</item>
+        <item>Maior ou Igual</item>
+    </string-array>
+</resources>

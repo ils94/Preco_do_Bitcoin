@@ -1,3 +1,38 @@
 <resources>
-    <string name="app_name">Preço do Bitcoin</string>
+    <string name="app_name">Bitcoin Price App</string>
+    <string name="notification_interval">Notification Interval</string>
+    <string name="currency">Currency</string>
+    <string name="currency_description">The selected currency will be used to compare with the target price.</string>
+    <string name="price_condition">Price Condition</string>
+    <string name="target_price">Target Price (Optional)</string>
+    <string name="target_price_hint">Enter the target price</string>
+    <string name="start_service">Start Service</string>
+    <string name="stop_service">Stop Service</string>
+    <string name="last_price">Last price: --</string>
+    <string name="invalid_target_price">Please enter a valid price greater than 0.</string>
+    <string name="invalid_target_price_format">Please enter a valid numeric price.</string>
+    <string name="invalid_target_price_default">Invalid target price, using default.</string>
+    <!-- Notification-related strings -->
+    <string name="persistent_channel_name">Bitcoin Price Service</string>
+    <string name="price_channel_name">Bitcoin Price Update</string>
+    <string name="persistent_notification_title">Bitcoin Price Monitoring Service</string>
+    <string name="persistent_notification_text">Monitoring Bitcoin price...</string>
+    <string name="price_notification_title">Bitcoin Price Update</string>
+    <string name="persistent_channel_description">Channel for persistent Bitcoin notification service</string>
+    <string name="price_channel_description">Channel for Bitcoin price updates</string>
+    <string-array name="intervals">
+        <item>5 minutes</item>
+        <item>10 minutes</item>
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>4 hours</item>
+        <item>6 hours</item>
+        <item>12 hours</item>
+        <item>24 hours</item>
+    </string-array>
+    <string-array name="price_conditions">
+        <item>Less than or Equal</item>
+        <item>Greater than or Equal</item>
+    </string-array>
 </resources>

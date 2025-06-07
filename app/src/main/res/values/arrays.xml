@@ -1,0 +1,13 @@
+<resources>
+    <integer-array name="interval_values">
+        <item>300000</item> <!-- 5 minutes -->
+        <item>600000</item> <!-- 10 minutes -->
+        <item>900000</item> <!-- 15 minutes -->
+        <item>1800000</item> <!-- 30 minutes -->
+        <item>3600000</item> <!-- 1 hour -->
+        <item>14400000</item> <!-- 4 hours -->
+        <item>21600000</item> <!-- 6 hours -->
+        <item>43200000</item> <!-- 12 hours -->
+        <item>86400000</item> <!-- 24 hours -->
+    </integer-array>
+</resources>

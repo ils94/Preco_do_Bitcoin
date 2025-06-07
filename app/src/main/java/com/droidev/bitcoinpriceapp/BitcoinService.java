@@ -20,6 +20,7 @@ public class BitcoinService extends Service {
     private long INTERVAL = 5 * 60 * 1000;
     private double targetPrice = -1.0;
     private String currency = "USD";
+    private String priceCondition = "LESS_THAN_OR_EQUAL"; // New field for price condition
     private Runnable task;
     private long lastExecutionTime = 0;
 
@@ -29,6 +30,7 @@ public class BitcoinService extends Service {
     private static final String KEY_INTERVAL = "interval";
     private static final String KEY_TARGET_PRICE = "target_price";
     private static final String KEY_CURRENCY = "currency";
+    private static final String KEY_PRICE_CONDITION = "price_condition"; // New preference key
     private static final String KEY_LAST_EXECUTION = "last_execution";
 
     private double lastBrlPrice = -1.0;
@@ -58,7 +60,10 @@ public class BitcoinService extends Service {
                 currency = intent.getStringExtra("currency");
                 saveCurrency(currency);
             }
-
+            if (intent.hasExtra("priceCondition")) { // Handle new extra
+                priceCondition = intent.getStringExtra("priceCondition");
+                savePriceCondition(priceCondition);
+            }
         }
         handler.removeCallbacks(task);
         scheduleNextRun();
@@ -133,10 +138,18 @@ public class BitcoinService extends Service {
         boolean shouldNotify = false;
 
         if (targetPrice > 0) {
-            if (currency.equals("USD") && usd >= targetPrice) {
-                shouldNotify = true;
-            } else if (currency.equals("BRL") && brl >= targetPrice) {
-                shouldNotify = true;
+            if (currency.equals("USD")) {
+                if (priceCondition.equals("LESS_THAN_OR_EQUAL") && usd <= targetPrice) {
+                    shouldNotify = true;
+                } else if (priceCondition.equals("GREATER_THAN_OR_EQUAL") && usd >= targetPrice) {
+                    shouldNotify = true;
+                }
+            } else if (currency.equals("BRL")) {
+                if (priceCondition.equals("LESS_THAN_OR_EQUAL") && brl <= targetPrice) {
+                    shouldNotify = true;
+                } else if (priceCondition.equals("GREATER_THAN_OR_EQUAL") && brl >= targetPrice) {
+                    shouldNotify = true;
+                }
             }
         } else {
             if (brl != lastBrlPrice || usd != lastUsdPrice) {
@@ -182,11 +195,19 @@ public class BitcoinService extends Service {
                 .apply();
     }
 
+    private void savePriceCondition(String condition) { // New method to save condition
+        SharedPreferences prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        prefs.edit()
+                .putString(KEY_PRICE_CONDITION, condition)
+                .apply();
+    }
+
     private void loadPreferences() {
         SharedPreferences prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         INTERVAL = prefs.getLong(KEY_INTERVAL, 5 * 60 * 1000);
         targetPrice = Double.longBitsToDouble(prefs.getLong(KEY_TARGET_PRICE, Double.doubleToLongBits(-1.0)));
         currency = prefs.getString(KEY_CURRENCY, "USD");
+        priceCondition = prefs.getString(KEY_PRICE_CONDITION, "LESS_THAN_OR_EQUAL"); // Load condition
         lastExecutionTime = prefs.getLong(KEY_LAST_EXECUTION, 0);
         lastBrlPrice = Double.longBitsToDouble(prefs.getLong(KEY_BRL, Double.doubleToLongBits(-1.0)));
         lastUsdPrice = Double.longBitsToDouble(prefs.getLong(KEY_USD, Double.doubleToLongBits(-1.0)));
